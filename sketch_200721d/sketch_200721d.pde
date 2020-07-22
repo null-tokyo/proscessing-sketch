@@ -1,3 +1,8 @@
+import java.util.Calendar;
+import gifAnimation.*;
+
+GifMaker gifExport;
+
 int tileCountX = 2;
 int tileCountY = 10;
 
@@ -11,7 +16,12 @@ void setup() {
   size(800, 800);
   colorMode(HSB,360,100,100,100); 
   noStroke();
-} 
+  
+  gifExport = new GifMaker(this, "expprt.gif");
+  gifExport.setRepeat(0);
+  gifExport.setQuality(10);
+  gifExport.setDelay(20);
+}
 
 void draw() {
   tileCountX = (int) map(mouseX, 0, width, 2, 100);
@@ -48,6 +58,12 @@ void draw() {
       i++;
     }
   }
+
+  if(frameCount <= 50*3){
+    gifExport.addFrame(); // フレームを追加
+  } else {
+    gifExport.finish(); // 終了してファイル保存
+  }
 }
 
 void shakeColors() {
@@ -64,4 +80,10 @@ void mouseReleased() {
 void keyReleased() {
   if(key == '1') interpolateShortest = true;
   if(key == '2') interpolateShortest = false;
+  if (key == 's' || key == 'S') saveFrame(timestamp()+"_##.png");
+}
+
+String timestamp() {
+  Calendar now = Calendar.getInstance();
+  return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", now);
 }
