@@ -8,19 +8,42 @@ boolean saveGif = false;
 int startGifFrame = 0;
 int gifSecond = 3;
 
+color strokeColor = color(0, 10);
+
 void setup(){
   frameRate(30);
   size(800, 800, P3D);
   colorMode(HSB, 360, 100, 100, 100);
-  noStroke();
+  smooth();
+  noFill();
+  background(360);
 }
 
 void draw() {
   /*
   * draw your program!
   */
-  fill(190, 80, 100);
-  rect(0, 0, width, height);
+  if(mousePressed) {
+    pushMatrix();
+    
+    translate(width/2, height/2);
+    int circleResolution = (int) map(mouseY + 100, 0, height, 2, 10);
+    float radius = mouseX - width/2 + 0.5;
+    float angle = TWO_PI / circleResolution;
+
+    strokeWeight(2);
+    stroke(strokeColor);
+
+    beginShape();
+    for (int i = 0; i <= circleResolution; ++i) {
+      float x = 0 + cos(angle * i + PI / 6) * radius;
+      float y = 0 + sin(angle * i + PI / 6) * radius;
+      vertex(x, y);
+    }
+    endShape();
+
+    popMatrix();
+  }
 
   // save gif animation
   if(saveGif) {
@@ -34,6 +57,8 @@ void draw() {
 }
 
 void keyReleased() {  
+  if (key == DELETE || key == BACKSPACE) background(360);
+
   if (key == 's' || key == 'S') saveFrame(timestamp()+"_####.png");
   if (key == 'g' || key == 'g') {
     gifExport = new GifMaker(this, timestamp()+".gif");
@@ -42,6 +67,18 @@ void keyReleased() {
     gifExport.setDelay(1);
     startGifFrame = frameCount;
     saveGif = true;
+  }
+
+  switch(key){
+  case '1':
+    strokeColor = color(0, 10);
+    break;
+  case '2':
+    strokeColor = color(192, 100, 64, 10);
+    break;
+  case '3':
+    strokeColor = color(52, 100, 71, 10);
+    break;
   }
 }
 

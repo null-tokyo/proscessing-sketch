@@ -10,17 +10,32 @@ int gifSecond = 3;
 
 void setup(){
   frameRate(30);
-  size(800, 800, P3D);
-  colorMode(HSB, 360, 100, 100, 100);
-  noStroke();
+  size(550, 550, P3D);
 }
 
 void draw() {
   /*
   * draw your program!
   */
-  fill(190, 80, 100);
-  rect(0, 0, width, height);
+  smooth();
+  noFill();
+  background(255);
+  translate(width/2, height/2);
+
+  int circleResolution = (int) map(mouseY, 0, height, 2, 80);
+  float radius = mouseX - width/2 + 0.5;
+  float angle = TWO_PI/circleResolution;
+
+  strokeWeight(mouseY/20);
+
+  beginShape();
+  for (int i = 0; i < circleResolution; ++i) {
+    float x = cos(angle * i) * radius;
+    float y = sin(angle * i) * radius;
+    // line(0, 0, x, y);
+    vertex(x, y);
+  }
+  endShape(CLOSE);
 
   // save gif animation
   if(saveGif) {
@@ -33,7 +48,10 @@ void draw() {
   }
 }
 
-void keyReleased() {  
+void keyReleased() {
+  if (key == '0') strokeCap(SQUARE);
+  if (key == '1') strokeCap(ROUND);
+  if (key == '2') strokeCap(PROJECT);
   if (key == 's' || key == 'S') saveFrame(timestamp()+"_####.png");
   if (key == 'g' || key == 'g') {
     gifExport = new GifMaker(this, timestamp()+".gif");

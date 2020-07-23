@@ -8,21 +8,43 @@ boolean saveGif = false;
 int startGifFrame = 0;
 int gifSecond = 3;
 
+// Global Setting
+int tileCount = 20;
+int actRandomSeed = 0;
+int actStrokeCap = ROUND;
+
 void setup(){
   frameRate(30);
-  size(800, 800, P3D);
-  colorMode(HSB, 360, 100, 100, 100);
-  noStroke();
+  size(600, 600);
 }
 
 void draw() {
   /*
   * draw your program!
   */
-  fill(190, 80, 100);
-  rect(0, 0, width, height);
+  background(255);
+  randomSeed(actRandomSeed);
+  strokeCap(actStrokeCap);
 
-  // save gif animation
+  for (int gridY = 0; gridY < tileCount; gridY++) {
+    for (int gridX = 0; gridX < tileCount; gridX++) {
+      int posX = width / tileCount * gridX;
+      int posY = height / tileCount * gridY;
+
+      int toggle = (int) random(0, 2);
+
+      if(toggle == 0) {
+        strokeWeight(mouseX/20);
+        line(posX, posY, posX+width/tileCount, posY+height/tileCount);
+      }
+      if(toggle == 1) {
+        strokeWeight(mouseY/20);
+        line(posX, posY+height/tileCount, posX+width/tileCount, posY);
+      }
+    }
+  }
+
+  // save ggridYf animation
   if(saveGif) {
     if(frameCount < frameRate * gifSecond + startGifFrame) {
       gifExport.addFrame(); // フレームを追加
@@ -31,6 +53,9 @@ void draw() {
       saveGif = false;
     }
   }
+}
+void mouseReleased() {
+  actRandomSeed = (int) random(100000);
 }
 
 void keyReleased() {  
