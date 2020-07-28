@@ -9,20 +9,39 @@ int startGifFrame = 0;
 int gifSecond = 3;
 
 //Global
+int tileCount = 20;
+color moduleColor = color(0);
+int moduleAlpha = 180;
+int actRandomSeed = 0;
+int max_distance = 500;
 
 void setup(){
-  frameRate(30);
   size(800, 800, P3D);
-  colorMode(HSB, 360, 100, 100, 100);
-  noStroke();
 }
 
 void draw() {
   /*
   * draw your program!
   */
-  fill(190, 80, 100);
-  rect(0, 0, width, height);
+  background(255);
+  smooth();
+  noFill();
+
+  randomSeed(actRandomSeed);
+
+  stroke(moduleColor, moduleAlpha);
+  strokeWeight(3);
+
+  for (int gridY = 0; gridY < height; gridY+=tileCount) {
+    for (int gridX = 0; gridX < width; gridX+=tileCount) {
+      float diamater = dist(mouseX, mouseY, gridX, gridY);
+      diamater = diamater / max_distance * 40;
+      pushMatrix();
+      translate(gridX, gridY, diamater*5);
+      rect(0, 0, diamater, diamater);
+      popMatrix();
+    }
+  }
 
   // save gif animation
   if(saveGif) {
@@ -33,6 +52,10 @@ void draw() {
       saveGif = false;
     }
   }
+}
+
+void mousePressed() {
+  actRandomSeed = (int) random(100000);
 }
 
 void keyReleased() {  
